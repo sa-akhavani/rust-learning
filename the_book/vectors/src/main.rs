@@ -1,4 +1,21 @@
 fn main() {
+    let mut v = vec![1, 2, 3];
+    println!("{:?}", v);
+    let mut second = v[1];
+    println!("Adding");
+    second += 10;
+    println!("{:?}", v);
+    println!("Second: {:?}", second);
+
+    println!("---");
+    let second_v2 = &mut v[1];
+
+    *second_v2 = *second_v2 + 100;
+    println!("SecondV2: {}", second_v2);
+    println!("{:?}", v);
+}
+
+fn old_main() {
     let mut v: Vec<i32> = Vec::new();
     v.push(1);
     v.push(2);
