@@ -1,49 +1,99 @@
-enum Message {
-    Quit,
-    Move { x: i32, y: i32 },
-    Write(String),
-    ChangeColor(i32, i32, i32),
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Massachusetts,
+    California,
+    Maine,
+}
+
+impl UsState {
+    fn existed_in(&self, year: u16) -> bool {
+        match self {
+            UsState::Alabama => year >= 1819,
+            UsState::Massachusetts => year >= 1800,
+            UsState::California => year >= 1825,
+            UsState::Maine => year >= 2010,
+        }
+    }
+}
+
+#[derive(Debug)]
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
 }
 
 fn main() {
-    let some_number = Some(34);
-    let some_char = Some('A');
-    let some_string = Some(String::from("KEK"));
+    let my_penny: Coin = Coin::Penny;
+    println!("{}", value_in_cents(&my_penny));
+    let my_mass_quarter = Coin::Quarter(UsState::Massachusetts);
+    println!("{}", value_in_cents(&my_mass_quarter));
+    // if let Coin::Quarter(state) = my_mass_quarter {
+    //     println!("This coin is a Quarter!");
+    //     println!("it's {} enough", state.existed_in(1000));
+    // }
+    println!("{:?}", describe_state_quarter(&my_mass_quarter));
 
-    let absent_number: Option<u32> = None;
-
-    println!(
-        "{:?}, {:?}, {:?}, {:?}",
-        some_number, some_char, some_string, absent_number
-    );
-
-    let x: i8 = 5;
-    let y: Option<i8> = Some(5);
-
-    // let sum = x + y; // throws error!
-    // let absent_behx: i8;
-    // let sm = x + absent_behx;
-
-    let x = Some(54);
-    println!("{:?}", plus_one(x));
-    let y = None;
-    println!("{:?}", plus_one(y));
-
-    let dice_roll = 9;
-    let my_string: &str = match dice_roll {
-        1 => "sadkek",
-        6 => "kek!",
-        _ => "hmm",
-    };
-    println!("{}", my_string);
+    let my_maine_quarter = Coin::Quarter(UsState::Maine);
+    println!("{:?}", describe_state_quarter(&my_maine_quarter));
 }
 
-fn plus_one(x: Option<i32>) -> Option<i32> {
-    match x {
-        Some(val) => Some(val + 1),
-        None => {
-            println!("need a number to be able to do this!");
-            None
+fn describe_state_quarter(coin: &Coin) -> Option<String> {
+    /*
+    match coin {
+        Coin::Quarter(state) => {
+            if state.existed_in(1900) {
+                Some(format!("{state:?} is pretty old!"))
+            } else {
+                Some(format!("{state:?} is pretty young!"))
+            }
+        }
+        _ => None,
+    }
+    */
+    /*
+    if let Coin::Quarter(state) = coin {
+        if state.existed_in(1900) {
+            Some(format!("{state:?} is pretty old!"))
+        } else {
+            Some(format!("{state:?} is pretty young!"))
+        }
+    } else {
+        None
+    }
+    */
+    /*
+    let state = if let Coin::Quarter(state) = coin {
+        state
+    } else {
+        return None;
+    };
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old!"))
+    } else {
+        Some(format!("{state:?} is pretty young!"))
+    }
+    */
+    let Coin::Quarter(state) = coin else {
+        return None;
+    };
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old!"))
+    } else {
+        Some(format!("{state:?} is pretty young!"))
+    }
+}
+
+fn value_in_cents(coin: &Coin) -> u16 {
+    match coin {
+        Coin::Penny => return 1,
+        Coin::Nickel => return 5,
+        Coin::Dime => return 10,
+        Coin::Quarter(state) => {
+            println!("THIS IS A {:?} Quarter!", state);
+            25
         }
     }
 }
